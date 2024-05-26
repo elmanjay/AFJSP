@@ -49,17 +49,23 @@ def parse_fjsp(filename):
         'jobs': jobs
     }
 
-    jobs = [i for i in range(1, fjsp_instance["num_jobs"] + 1)]
-    
-    test = []
-    for job_id in jobs:
-        job_operations = fjsp_instance['jobs'][f'job_{job_id}']
-        job_op = list(job_operations.keys())
-        test.append(job_op)
-    
-    
+    joblist = [i for i in range(1, fjsp_instance["num_jobs"] + 1)]
 
-    return fjsp_instance, machines, processing_times
+    OP = []
+    for job_id in joblist:
+        job_operations = fjsp_instance['jobs'][f'job_{job_id}']
+        OP.append( [i for i in range(1,len(job_operations)+1)])
+
+    largeH=0
+    for job in joblist:
+        for op in OP[(job-1)]:
+            protimemax=0
+            for k in machines[f'job_{job}'][op]:
+                if protimemax<processing_times[f'job_{job}'][op][k]:
+                    protimemax=processing_times[f'job_{job}'][op][k]
+            largeH+=protimemax
+    
+    return fjsp_instance, machines, processing_times, largeH
 
 def print_jobs(fjsp_instance):
     import pprint
@@ -71,7 +77,7 @@ if __name__ == "__main__":
     filename = 'data/fjsp-instances-main 2/dauzere/01a.txt'
 
     # Parse the FJSP instance from the file
-    fjsp_instance,machines,processtimes = parse_fjsp(filename)
+    fjsp_instance,machines,processtimes, H = parse_fjsp(filename)
 
     # Print the parsed information
     print_jobs(fjsp_instance) 

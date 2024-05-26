@@ -1,14 +1,15 @@
 from gurobipy import Model, GRB, quicksum
 from dataparser import parse_fjsp
 
-H = 5000
-data, mij, p = parse_fjsp("data/fjsp-instances-main 2/dauzere/01a.txt")
+data, mij, p, H = parse_fjsp("data/fjsp-instances-main 2/dauzere/01a.txt")
 jobs = [i for i in range(1, data["num_jobs"] + 1)]
 machines = [i for i in range(0, data["num_machines"])] 
 operations = []
 for job_id in jobs:
     job_operations = data['jobs'][f'job_{job_id}']
     operations.append( [i for i in range(1,len(job_operations)+1)])
+
+print(p[f"job_{1}"])
 
 model = Model()
 
@@ -36,7 +37,7 @@ model.setObjective(cmax, GRB.MINIMIZE)
 
 model.addConstrs((quicksum(a[i, j, k] for k in mij[f"job_{i}"][j]) == 1 for i in jobs for j in operations[i-1] ), name="NB2")
 
-model.addConstrs((t[i,j] >= t[i,j-1] +quicksum(p[f"job_{i}"][j-1][k]* a[i,j-1,k] for k in mij[f"job_{i}"][j-1]) for i in jobs for j in operations[i-1][1:]), name="NB3")
+model.addConstrs((t[i,j] >= t[i,j-1] + quicksum(p[f"job_{i}"][j-1][k]* a[i,j-1,k] for k in mij[f"job_{i}"][j-1]) for i in jobs for j in operations[i-1][1:]), name="NB3")
 
 model.addConstrs(
     (t[i, j] >= t[iz, jz] + p[f"job_{iz}"][jz][kz] - (2 - a[i, j, k] - a[iz, jz, kz] + B[i, j, iz, jz]) * H
