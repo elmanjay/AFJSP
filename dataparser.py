@@ -74,7 +74,7 @@ def print_jobs(fjsp_instance):
 
 if __name__ == "__main__":
     # Specify the filename
-    filename = 'data/fattahi/test.txt'
+    filename = "data/fjsp-instances-main 2/kacem/k1.txt"
 
     # Parse the FJSP instance from the file
     fjsp_instance,machines,processtimes, H = parse_fjsp(filename)

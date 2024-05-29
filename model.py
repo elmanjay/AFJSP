@@ -1,7 +1,9 @@
 from gurobipy import Model, GRB, quicksum
 from dataparser import parse_fjsp
+import csv
 
 data, mij, p, H = parse_fjsp("data/fjsp-instances-main 2/behnke/sm01_2.txt")
+
 jobs = [i for i in range(1, data["num_jobs"] + 1)]
 machines = [i for i in range(0, data["num_machines"])] 
 operations = []
@@ -52,7 +54,7 @@ for i in jobs:
                                             name="NB4")
                             model.addConstr(
                                 t[i, j] >= t[ip, jp] +
-                                p[f"job_{i}"][j][iipk] - H *
+                                p[f"job_{ip}"][jp][iipk] - H *
                                 (2 + B[i, j, ip, jp] - a[i, j, iipk] - a[ip, jp, iipk]),
                                 name="NB5")
 
@@ -62,8 +64,28 @@ model.addConstrs((cmax >= t[i,j] +quicksum(p[f"job_{i}"][j][k]* a[i,j,k] for k i
 #model.addConstrs((cmax >= t[i,operations[i-1][-1]] +quicksum(p[f"job_{i}"][operations[i-1][-1]][k]* a[i,operations[i-1][-1],k] for k in mij[f"job_{i}"][operations[i-1][-1]]) for i in jobs), name="NB6")
 model.write("model.lp")
 model.optimize()
-# if model.Status == GRB.INFEASIBLE:
-#     model.computeIIS()
+
+if model.status == GRB.OPTIMAL:
+    # Öffnen einer CSV-Datei zum Schreiben
+    with open('solution.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        
+        # Schreiben der Kopfzeile mit zusätzlichen Informationen
+        writer.writerow([])  # Leere Zeile zur Trennung
+        writer.writerow(['Variable', 'Value'])
+        
+        # Schreiben der Werte der Entscheidungsvariablen, die nicht null sind
+        for v in model.getVars():
+            if v.x != 0:  # Überprüfen, ob der Wert der Variable nicht null ist
+                writer.writerow([v.varName, v.x])
+        
+        writer.writerow(["Anzahl Jobs:" , f"{data["num_jobs"]}"])
+        writer.writerow(["Anzahl Maschinen:" , f"{data["num_machines"]}"])  
+
+    print("Lösung wurde erfolgreich in 'solution.csv' gespeichert.")
+else:
+    print("Es wurde keine optimale Lösung gefunden.")
+
 model.write("solution.sol")
 # model.write('iismodel.ilp')
 
