@@ -76,11 +76,16 @@ if model.status == GRB.OPTIMAL:
         
         # Schreiben der Werte der Entscheidungsvariablen, die nicht null sind
         for v in model.getVars():
-            if v.x != 0:  # Überprüfen, ob der Wert der Variable nicht null ist
+            if v.varName.startswith('t_') or v.x != 0:  # Überprüfen, ob der Wert der Variable nicht null ist
                 writer.writerow([v.varName, v.x])
         
-        writer.writerow(["Anzahl Jobs:" , f"{data["num_jobs"]}"])
-        writer.writerow(["Anzahl Maschinen:" , f"{data["num_machines"]}"])  
+        for i in jobs:
+            for j in operations[i-1]:
+                for k in mij[f"job_{i}"][j]:
+                    writer.writerow([f"p_{i}_{j}_{k}", f"{p[f'job_{i}'][j][k]}"])
+        
+        writer.writerow(["Anzahl Jobs:", f"{data['num_jobs']}"])
+        writer.writerow(["Anzahl Maschinen:", f"{data['num_machines']}"])  
 
     print("Lösung wurde erfolgreich in 'solution.csv' gespeichert.")
 else:
