@@ -81,3 +81,5 @@ if __name__ == "__main__":
 
     # Print the parsed information
     print_jobs(fjsp_instance) 
+
+    print(H)
