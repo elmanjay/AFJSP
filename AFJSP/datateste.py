@@ -41,16 +41,6 @@ def parse_fjsp(filename):
             
             jobs[f'job_{i}'][f'alternative_{j}'] = operations
 
-        #     # Extrahiere Maschinen-IDs für jede Operation in jedem Job
-        #     machines[f'job_{i}'] = {}
-        #     for j, ops in operations.items():
-        #         machines[f'job_{i}'][j] = [op['machine_id'] for op in ops]
-            
-        # # Extrahiere Verarbeitungszeiten für jede Operation in jedem Job
-        # processing_times[f'job_{i}'] = {}
-        # for j, ops in operations.items():
-        #     processing_times[f'job_{i}'][j] = {op['machine_id']: op['processing_time'] for op in ops}
-
     fjsp_instance = {
         'num_jobs': num_jobs,
         'num_machines': num_machines,
@@ -86,14 +76,17 @@ def parse_fjsp(filename):
         for alternative in range(1, num_alternatives[job-1] + 1):
             for op in OP[(job-1)]:
                 protimemax=0
-                print(job,alternative,op)
                 for k in machine[job][alternative][op]:
                     if protimemax<processing_times[job][alternative][op][k]:
                         protimemax=processing_times[job][alternative][op][k]
                 largeH+=protimemax
+    
+    for i in joblist: 
+        alternatives[i] = list(range(1, num_alternatives[i-1] + 1))
+
 
     
-    return fjsp_instance,jobs, machine, processing_times, largeH
+    return fjsp_instance,jobs, machine, processing_times, alternatives, largeH
 
 def print_jobs(fjsp_instance):
     import pprint
@@ -105,7 +98,7 @@ if __name__ == "__main__":
     filename = "data/afjsp/testinstance.txt"
 
     # Parse the FJSP instance from the file
-    fjsp_instance,jobs,machines,processtimes, H = parse_fjsp(filename)
+    fjsp_instance,jobs,machines,processtimes, alternatives, H = parse_fjsp(filename)
 
     operations = jobs["job_1"]["alternative_1"]
     #print(operations)

@@ -17,8 +17,6 @@ model = Model()
 
 cmax = model.addVar(lb=0,vtype=GRB.CONTINUOUS, name=f'cmax')
 
-x = {}
-
 t = {}
 for i in jobs:
     for j in operations[i-1]:
