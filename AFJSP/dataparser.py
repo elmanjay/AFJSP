@@ -47,6 +47,7 @@ def parse_afjsp(filename):
     fjsp_instance = {
         'num_jobs': num_jobs,
         'num_machines': num_machines,
+        "num_alternatives": num_alternatives,
         'jobs': jobs
     }
     print(fjsp_instance)
@@ -104,7 +105,6 @@ if __name__ == "__main__":
 
     # Parse the FJSP instance from the file
     fjsp_instance,machines,processtimes, alternatives, H = parse_afjsp(filename)
-    print(H)
 
 
     # Print the parsed information

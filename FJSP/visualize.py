@@ -111,7 +111,7 @@ def plot_graph(df):
 
 if __name__ == "__main__":
     instance = read_solution(file_path="solution.csv")
-    #plot_graph(instance)
-    plot_gantt(instance, 18)
+    plot_graph(instance)
+    #plot_gantt(instance, 18)
 
 

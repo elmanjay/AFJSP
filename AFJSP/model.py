@@ -2,7 +2,7 @@ from gurobipy import Model, GRB, quicksum
 from dataparser import parse_afjsp
 import csv
 
-data, mivj, p, alternatives, H = parse_afjsp("data/afjsp/testinstance copy.txt")
+data, mivj, p, alternatives, H = parse_afjsp("data/afjsp/testinstance.txt")
 
 jobs = [i for i in range(1, data["num_jobs"] + 1)]
 machines = [i for i in range(0, data["num_machines"])] 
@@ -83,31 +83,33 @@ model.write("model.lp")
 
 model.optimize()
 
-# if model.status == GRB.OPTIMAL:
-#     # Öffnen einer CSV-Datei zum Schreiben
-#     with open('solution.csv', mode='w', newline='') as file:
-#         writer = csv.writer(file)
+if model.status == GRB.OPTIMAL:
+    # Öffnen einer CSV-Datei zum Schreiben
+    with open('solution.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
         
-#         # Schreiben der Kopfzeile mit zusätzlichen Informationen
-#         writer.writerow([])  # Leere Zeile zur Trennung
-#         writer.writerow(['Variable', 'Value'])
+        # Schreiben der Kopfzeile mit zusätzlichen Informationen
+        writer.writerow([])  # Leere Zeile zur Trennung
+        writer.writerow(['Variable', 'Value'])
         
-#         # Schreiben der Werte der Entscheidungsvariablen, die nicht null sind
-#         for v in model.getVars():
-#             if v.varName.startswith('t_') or v.x != 0:  # Überprüfen, ob der Wert der Variable nicht null ist
-#                 writer.writerow([v.varName, v.x])
+        # Schreiben der Werte der Entscheidungsvariablen, die nicht null sind
+        for v in model.getVars():
+            if v.varName.startswith('t_') or v.x != 0:  # Überprüfen, ob der Wert der Variable nicht null ist
+                writer.writerow([v.varName, v.x])
         
-#         for i in jobs:
-#             for j in operations[i]:
-#                 for k in mivj[i][v][j]:
-#                     writer.writerow([f"p_{i}__{v}_{j}_{k}", f"{p[i][v][j][k]}"])
+        for i in jobs:
+            for v in alternatives[i]:
+                for j in operations[i][v]:
+                    for k in mivj[i][v][j]:
+                        writer.writerow([f"p_{i}_{v}_{j}_{k}", f"{p[i][v][j][k]}"])
         
-#         writer.writerow(["Anzahl Jobs:", f"{data['num_jobs']}"])
-#         writer.writerow(["Anzahl Maschinen:", f"{data['num_machines']}"])  
+        writer.writerow(["Anzahl Jobs:", f"{data['num_jobs']}"])
+        writer.writerow(["Anzahl Alternativen:", f"{data['num_alternatives']}"])
+        writer.writerow(["Anzahl Maschinen:", f"{data['num_machines']}"])  
 
-#     print("Lösung wurde erfolgreich in 'solution.csv' gespeichert.")
-# else:
-#     print("Es wurde keine optimale Lösung gefunden.")
+    print("Lösung wurde erfolgreich in 'solution.csv' gespeichert.")
+else:
+    print("Es wurde keine optimale Lösung gefunden.")
 
 model.write("solution.sol")
 # model.write('iismodel.ilp')

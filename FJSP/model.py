@@ -2,7 +2,7 @@ from gurobipy import Model, GRB, quicksum
 from dataparser import parse_fjsp
 import csv
 
-data, mij, p, H = parse_fjsp("data/fjsp-instances-main 2/behnke/sm01_2.txt")
+data, mij, p, H = parse_fjsp("data/fjsp-instances-main 2/behnke/sm01_1.txt")
 
 jobs = [i for i in range(1, data["num_jobs"] + 1)]
 machines = [i for i in range(0, data["num_machines"])] 
