@@ -2,7 +2,7 @@ from gurobipy import Model, GRB, quicksum
 from dataparser import parse_afjsp
 import csv
 
-data, mivj, p, alternatives, H = parse_afjsp("data/afjsp/testinstance.txt")
+data, mivj, p, alternatives, H = parse_afjsp("data/afjsp/mfjs06 copy.txt") 
 
 jobs = [i for i in range(1, data["num_jobs"] + 1)]
 machines = [i for i in range(0, data["num_machines"])] 
@@ -78,14 +78,14 @@ model.addConstrs(t[i,v,j]- H * x[i,v] <= 0 for i in jobs for v in alternatives[i
 
 #möglicher weiße effizienter
 #model.addConstrs((cmax >= t[i,operations[i-1][-1]] +quicksum(p[f"job_{i}"][operations[i-1][-1]][k]* a[i,operations[i-1][-1],k] for k in mij[f"job_{i}"][operations[i-1][-1]]) for i in jobs), name="NB6")
-model.write("model.lp")
+model.write("AFJSP\model.lp")
 
 
 model.optimize()
 
 if model.status == GRB.OPTIMAL:
     # Öffnen einer CSV-Datei zum Schreiben
-    with open('solution.csv', mode='w', newline='') as file:
+    with open('AFJSP\solution.csv', mode='w', newline='') as file:
         writer = csv.writer(file)
         
         # Schreiben der Kopfzeile mit zusätzlichen Informationen
@@ -111,7 +111,7 @@ if model.status == GRB.OPTIMAL:
 else:
     print("Es wurde keine optimale Lösung gefunden.")
 
-model.write("solution.sol")
+model.write("Afjsp\solution.sol")
 # model.write('iismodel.ilp')
 
 

@@ -172,9 +172,9 @@ def plot_graph(df, active_alternatives):
     plt.show()
 
 if __name__ == "__main__":
-    instance, active = read_solution(file_path="solution.csv")
+    instance, active = read_solution(file_path="AFJSP\solution.csv")
     #print(instance.head())
     plot_graph(instance,active)
-    plot_gantt(instance, 0)
+    plot_gantt(instance, 2)
 
 

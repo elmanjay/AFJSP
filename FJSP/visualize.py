@@ -110,8 +110,8 @@ def plot_graph(df):
     plt.show()
 
 if __name__ == "__main__":
-    instance = read_solution(file_path="solution.csv")
-    plot_graph(instance)
-    #plot_gantt(instance, 18)
+    instance = read_solution(file_path="FJSP\solution.csv")
+    #plot_graph(instance)
+    plot_gantt(instance, 2)
 
 

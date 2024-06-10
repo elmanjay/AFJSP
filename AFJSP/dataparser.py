@@ -7,6 +7,7 @@ def parse_afjsp(filename):
     num_jobs = int(first_line[0])
     num_machines = int(first_line[1])
     num_alternatives = [int(i) for i in first_line[2:]]
+    print(num_alternatives)
 
     jobs = {}
     alternatives = {}
@@ -101,10 +102,12 @@ def print_jobs(fjsp_instance):
 
 if __name__ == "__main__":
     # Specify the filename
-    filename = "data/afjsp/testinstance copy.txt"
+    filename = "data/afjsp/sfjs09 afjsp.txt"
+    
 
     # Parse the FJSP instance from the file
     fjsp_instance,machines,processtimes, alternatives, H = parse_afjsp(filename)
+    print(H)
 
 
     # Print the parsed information
