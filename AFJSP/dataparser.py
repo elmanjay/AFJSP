@@ -102,7 +102,7 @@ def print_jobs(fjsp_instance):
 
 if __name__ == "__main__":
     # Specify the filename
-    filename = "data/afjsp/sfjs09 afjsp.txt"
+    filename = "data/AFJSP Test Instances/Test 3/test3.txt"
     
 
     # Parse the FJSP instance from the file

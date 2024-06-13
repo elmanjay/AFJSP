@@ -1,8 +1,9 @@
 from gurobipy import Model, GRB, quicksum
 from dataparser import parse_afjsp
 import csv
+#from os import *
 
-data, mivj, p, alternatives, H = parse_afjsp("data/afjsp/mfjs06 copy.txt") 
+data, mivj, p, alternatives, H = parse_afjsp("data/AFJSP Test Instances/Test 3/test3.txt") 
 
 jobs = [i for i in range(1, data["num_jobs"] + 1)]
 machines = [i for i in range(0, data["num_machines"])] 
@@ -70,14 +71,14 @@ for i in jobs:
                                         (2 + B[i, v, j, ip,vp, jp] - a[i,v, j, iipk] - a[ip,vp, jp, iipk]),
                                         name="NB5")
 
-model.addConstrs((cmax >= t[i,v,j] +quicksum(p[i][v][j][k]* a[i,v,j,k] for k in mivj[i][v][j]) for i in jobs for v in alternatives[i] for j in operations[i][v]), name="NB6")
+#model.addConstrs((cmax >= t[i,v,j] +quicksum(p[i][v][j][k]* a[i,v,j,k] for k in mivj[i][v][j]) for i in jobs for v in alternatives[i] for j in operations[i][v]), name="NB6")
 
 model.addConstrs((quicksum(x[i, v] for v in alternatives[i]) == 1 for i in jobs), name="NB7")
 
 model.addConstrs(t[i,v,j]- H * x[i,v] <= 0 for i in jobs for v in alternatives[i] for j in operations[i][v])
-
+print(operations[1][2][-1])
 #möglicher weiße effizienter
-#model.addConstrs((cmax >= t[i,operations[i-1][-1]] +quicksum(p[f"job_{i}"][operations[i-1][-1]][k]* a[i,operations[i-1][-1],k] for k in mij[f"job_{i}"][operations[i-1][-1]]) for i in jobs), name="NB6")
+model.addConstrs((cmax >= t[i,v,operations[i][v][-1]] +quicksum(p[i][v][operations[i][v][-1]][k]* a[i,v,operations[i][v][-1],k] for k in mivj[i][v][operations[i][v][-1]]) for i in jobs for v in alternatives[i]) , name="NB6")
 model.write("AFJSP\model.lp")
 
 
