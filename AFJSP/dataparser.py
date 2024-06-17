@@ -1,3 +1,5 @@
+import os
+
 def parse_afjsp(filename):
     with open(filename, 'r') as file:
         lines = file.readlines()

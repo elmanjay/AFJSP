@@ -1,6 +1,7 @@
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
+import os
 
 def read_solution(file_path="solution.csv"):
     try:
@@ -11,8 +12,8 @@ def read_solution(file_path="solution.csv"):
 
     # Parameter einlesen
     try:
-        num_jobs = int(data[data['Variable'] == 'Anzahl Jobs:']["Value"].iloc[0])
-        num_machines = int(data[data['Variable'] == 'Anzahl Maschinen:']["Value"].iloc[0])
+        num_jobs = int(data[data['Variable'] == 'NUM_JOBS']["Value"].iloc[0])
+        num_machines = int(data[data['Variable'] == 'NUM_MACHINES']["Value"].iloc[0])
     except Exception as e:
         print(f"Error extracting parameters: {e}")
         return None
@@ -68,7 +69,7 @@ def read_solution(file_path="solution.csv"):
 
         active_alternatives["Job"] = active_alternatives['Variable'].str.split('_').str[1].astype(int)
         active_alternatives["Alternative"] = active_alternatives['Variable'].str.split('_').str[2].astype(int)
-        print(active_alternatives.head())
+
     except ValueError as e:
         print(f"Error converting values: {e}")
         return None

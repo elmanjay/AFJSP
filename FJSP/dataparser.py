@@ -59,11 +59,11 @@ def parse_fjsp(filename):
     largeH=0
     for job in joblist:
         for op in OP[(job-1)]:
-            protimemax=0
+            maxprocessingtime=0
             for k in machines[f'job_{job}'][op]:
-                if protimemax<processing_times[f'job_{job}'][op][k]:
-                    protimemax=processing_times[f'job_{job}'][op][k]
-            largeH+=protimemax
+                if maxprocessingtime<processing_times[f'job_{job}'][op][k]:
+                    maxprocessingtime=processing_times[f'job_{job}'][op][k]
+            largeH+=maxprocessingtime
     
     return fjsp_instance, machines, processing_times, largeH
 
