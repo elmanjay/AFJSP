@@ -3,7 +3,7 @@ from dataparser import parse_afjsp
 import csv
 import os
 
-data, mivj, p, alternatives, units, H = parse_afjsp("data/AFJSP Test Instances/Test 3/test3.txt") 
+data, mivj,machines_oj, p, alternatives, units, H = parse_afjsp("data/AFJSP Test Instances/Test 3/test3.txt") 
 
 jobs = [i for i in range(1, data["num_jobs"] + 1)]
 machines = [i for i in range(0, data["num_machines"])] 
@@ -24,27 +24,33 @@ for i in jobs:
     for v in alternatives[i]:
         x[i, v] = model.addVar(vtype=GRB.BINARY, name=f'x_{i}_{v}')
 
-t = {}
-for i in jobs:
-    for v in alternatives[i]:
-        for j in operations[i][v]:
-            t[i, v, j] = model.addVar(lb=0,vtype=GRB.CONTINUOUS, name=f't_{i}_{v}_{j}')
-
 a = {}
 for i in jobs:
-    for v in alternatives[i]: 
-        for j in operations[i][v]:
-            for k in mivj[i][v][j]:
-                a[i,v,j,k] = model.addVar(vtype=GRB.BINARY, name=f'a_{i}_{v}_{j}_{k}')
+    for u in units[i]: 
+            for k in machines_oj[i][u]:
+                a[i,u,k] = model.addVar(vtype=GRB.BINARY, name=f'a_{i}_{v}_{j}_{k}')
 
 B = {}
 for i in jobs:
-    for v in alternatives[i]:
-        for j in operations[i][v]:
+    for j in units[i]:
             for iz in jobs:
-                for vz in alternatives[iz]:
-                    for jz in operations[iz][vz]:
-                        B[i,v, j, iz, vz, jz] = model.addVar(vtype=GRB.BINARY, name=f'B_{i}_{v}_{j}_{iz}_{vz}_{jz}')
+                if iz != i:
+                    for jz in units[iz]:
+                            B[i, j, iz, jz] = model.addVar(vtype=GRB.BINARY, name=f'B_{i}_{j}_{iz}_{jz}')
+
+s = {}
+for i in jobs:
+    for j in units[i]:
+            s[i, j] = model.addVar(lb=0,vtype=GRB.CONTINUOUS, name=f's_{i}_{j}')
+
+c = {}
+for i in jobs:
+    for j in units[i]:
+            s[i, j] = model.addVar(lb=0,vtype=GRB.CONTINUOUS, name=f'c_{i}_{j}')
+
+ci = {}
+for i in jobs:
+            s[i, j] = model.addVar(lb=0,vtype=GRB.CONTINUOUS, name=f'ci_{i}_{j}')
 
 model.setObjective(cmax, GRB.MINIMIZE)
 

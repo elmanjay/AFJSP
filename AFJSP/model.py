@@ -41,10 +41,11 @@ B = {}
 for i in jobs:
     for v in alternatives[i]:
         for j in operations[i][v]:
-            for iz in jobs:
-                for vz in alternatives[iz]:
-                    for jz in operations[iz][vz]:
-                        B[i,v, j, iz, vz, jz] = model.addVar(vtype=GRB.BINARY, name=f'B_{i}_{v}_{j}_{iz}_{vz}_{jz}')
+                for iz in jobs:
+                    if iz != i:
+                        for vz in alternatives[iz]:
+                            for jz in operations[iz][vz]:
+                                B[i,v, j, iz, vz, jz] = model.addVar(vtype=GRB.BINARY, name=f'B_{i}_{v}_{j}_{iz}_{vz}_{jz}')
 
 model.setObjective(cmax, GRB.MINIMIZE)
 
