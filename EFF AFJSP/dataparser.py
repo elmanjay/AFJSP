@@ -53,23 +53,34 @@ def parse_afjsp(filename):
         "num_alternatives": num_alternatives,
         'jobs': jobs
     }
-    print(fjsp_instance)
 
     machine = {}
+    machines_oj = {} 
+    processing_times = {}
     for i in range(1, num_jobs + 1):
         machine[i] = {}
+        machines_oj[i] = {}
         processing_times[i] = {}
         for j in range(1, num_alternatives[i-1] + 1):
             machine[i][j] = {}
+            #machines_oj[i][j] = set()
             processing_times[i][j] = {}
             for z in jobs[f"job_{i}"][f"alternative_{j}"]:
+                machines_oj[i][z] = set()
                 machine[i][j][z] = [item['machine_id'] for item in jobs[f"job_{i}"][f"alternative_{j}"][z]]
+                # Hier wird die generator expression in eine Liste umgewandelt und dann Elemente hinzugefügt
+                for item in jobs[f"job_{i}"][f"alternative_{j}"][z]:
+                    machines_oj[i][z].add(item['machine_id'])
                 processing_times[i][j][z] = {}
                 for k in machine[i][j][z]:
                     for key in jobs[f"job_{i}"][f"alternative_{j}"][z]:
                         for item in jobs[f"job_{i}"][f"alternative_{j}"][z]:
                             if item['machine_id'] == k:
                                 processing_times[i][j][z][k] = item['processing_time']
+
+
+
+
     joblist = [i for i in range(1, fjsp_instance["num_jobs"] + 1)]
 
     OP = {}
@@ -80,8 +91,13 @@ def parse_afjsp(filename):
             OP[job_id][v]= [i for i in range(1,len(job_operations)+1)]
 
     largeH=0
+    units = {}
     for job in joblist:
+        umaxj = 0
+        units[job] = {}
         for alternative in range(1, num_alternatives[job-1] + 1):
+            if len(OP[job][alternative]) > umaxj:
+                umaxj = len(OP[job][alternative])
             for op in OP[job][alternative]:
                 protimemax=0
                 print(job,alternative,op)
@@ -89,13 +105,14 @@ def parse_afjsp(filename):
                     if protimemax<processing_times[job][alternative][op][k]:
                         protimemax=processing_times[job][alternative][op][k]
                 largeH+=protimemax
+        units[job] = umaxj
     
     for i in joblist: 
         alternatives[i] = list(range(1, num_alternatives[i-1] + 1))
+    
 
-    print("Hehe")
-    print(len(OP[1][2]))
-    return fjsp_instance, machine, processing_times, alternatives, largeH
+    
+    return fjsp_instance, machine, machines_oj, processing_times, alternatives, units, largeH
 
 def print_jobs(fjsp_instance):
     import pprint
@@ -108,8 +125,11 @@ if __name__ == "__main__":
     
 
     # Parse the FJSP instance from the file
-    fjsp_instance,machines,processtimes, alternatives, H = parse_afjsp(filename)
-    print(H)
+    fjsp_instance,machines,machines_oj, processtimes, alternatives, units, H = parse_afjsp(filename)
+
+    print(machines_oj[1][1])
+
+    #print(H)
 
 
     # Print the parsed information
