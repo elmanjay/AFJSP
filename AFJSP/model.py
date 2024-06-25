@@ -3,7 +3,7 @@ from dataparser import parse_afjsp
 import csv
 import os
 
-data, mivj, p, alternatives, H = parse_afjsp("data/AFJSP Test Instances/Test 3/test3.txt") 
+data, mivj, p, alternatives, H = parse_afjsp("data/AFJSP Test Instances/papertest.txt") 
 
 jobs = [i for i in range(1, data["num_jobs"] + 1)]
 machines = [i for i in range(0, data["num_machines"])] 
@@ -81,14 +81,17 @@ model.addConstrs((quicksum(x[i, v] for v in alternatives[i]) == 1 for i in jobs)
 
 model.addConstrs((t[i,v,j]- H * x[i,v] <= 0 for i in jobs for v in alternatives[i] for j in operations[i][v]), name= "NB8")
 
-model.write("AFJSP\model.lp")
+#model.addConstr((t[4,2,1] == 18), name= "NB121")
+
+model.write(os.path.join("AFJSP", "model.lp"))
+
 
 
 model.optimize()
 
 if model.status == GRB.OPTIMAL:
     # Öffnen einer CSV-Datei zum Schreiben
-    with open('AFJSP\solution.csv', mode='w', newline='') as file:
+    with open(os.path.join("AFJSP", "solution.csv"), mode='w', newline='') as file:
         writer = csv.writer(file)
         
         # Schreiben der Kopfzeile mit zusätzlichen Informationen
@@ -114,7 +117,7 @@ if model.status == GRB.OPTIMAL:
 else:
     print("Es wurde keine optimale Lösung gefunden.")
 
-model.write("Afjsp\solution.sol")
+model.write(os.path.join("AFJSP", "solution.sol"))
 
 
 
