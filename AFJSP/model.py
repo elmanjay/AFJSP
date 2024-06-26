@@ -3,7 +3,7 @@ from dataparser import parse_afjsp
 import csv
 import os
 
-data, mivj, p, alternatives, H = parse_afjsp("data/AFJSP Test Instances/papertest.txt") 
+data, mivj, p, alternatives, H = parse_afjsp("data/AFJSP Test Instances/instance.txt") 
 
 jobs = [i for i in range(1, data["num_jobs"] + 1)]
 machines = [i for i in range(0, data["num_machines"])] 
