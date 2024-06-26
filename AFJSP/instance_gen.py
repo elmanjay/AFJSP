@@ -37,10 +37,10 @@ def gen_instance(path,num_jobs,num_machines,alt_flex,rout_flex):
     
 if __name__ == "__main__":
 
-    num_jobs = 5
-    num_machines = 5
+    num_jobs = 10
+    num_machines = 10
     #Fixe Anzahl der Alternativen pro Job
-    alt_flex = 2
+    alt_flex = 3
     #Intervallobergrenze möglicher Maschinen pro Operation
     rout_flex = 3
 
