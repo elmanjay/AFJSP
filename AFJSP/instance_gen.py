@@ -45,5 +45,5 @@ if __name__ == "__main__":
     rout_flex = 3
 
 
-    path = os.path.join("AFJSP", "instance.txt")
+    path = os.path.join("data", "Analyse", "instance.txt")
     gen_instance(path,num_jobs,num_machines,alt_flex,rout_flex)
