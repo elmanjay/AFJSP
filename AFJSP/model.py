@@ -5,7 +5,7 @@ import os
 
 def create_model(path):
 
-    data, mivj, p, alternatives, H = parse_afjsp("data/AFJSP Test Instances/cözgüven2010.txt") 
+    data, mivj, p, alternatives, H = parse_afjsp(path) 
 
     jobs = [i for i in range(1, data["num_jobs"] + 1)]
     machines = [i for i in range(0, data["num_machines"])] 
@@ -83,12 +83,13 @@ def create_model(path):
 
     model.addConstrs((t[i,v,j]- H * x[i,v] <= 0 for i in jobs for v in alternatives[i] for j in operations[i][v]), name= "NB8")
 
-    #model.addConstr((t[4,2,1] == 18), name= "NB121")
     return model, jobs , alternatives, operations, mivj, p , data
 
 if __name__ == "__main__":
     path = os.path.join("AFJSP", "instance.txt")
     model, jobs, alternatives, operations, mivj, p, data = create_model(path)
+
+    print(p)
 
     model.write(os.path.join("AFJSP", "model.lp"))
 

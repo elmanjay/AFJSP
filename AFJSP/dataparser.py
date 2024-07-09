@@ -9,7 +9,6 @@ def parse_afjsp(filename):
     num_jobs = int(first_line[0])
     num_machines = int(first_line[1])
     num_alternatives = [int(i) for i in first_line[2:]]
-    print(num_alternatives)
 
     jobs = {}
     alternatives = {}
@@ -25,8 +24,6 @@ def parse_afjsp(filename):
             # Füge ein alternatives Dictionary hinzu
             jobs[f'job_{i}'][f'alternative_{j}'] = {}
             line = lines[count].strip().split()
-            print(line)
-            print(count)
             count = count + 1
             num_operations = int(line[0])
             operations = {}
@@ -53,7 +50,6 @@ def parse_afjsp(filename):
         "num_alternatives": num_alternatives,
         'jobs': jobs
     }
-    print(fjsp_instance)
 
     machine = {}
     for i in range(1, num_jobs + 1):
@@ -84,7 +80,6 @@ def parse_afjsp(filename):
         for alternative in range(1, num_alternatives[job-1] + 1):
             for op in OP[job][alternative]:
                 protimemax=0
-                print(job,alternative,op)
                 for k in machine[job][alternative][op]:
                     if protimemax<processing_times[job][alternative][op][k]:
                         protimemax=processing_times[job][alternative][op][k]
@@ -93,8 +88,6 @@ def parse_afjsp(filename):
     for i in joblist: 
         alternatives[i] = list(range(1, num_alternatives[i-1] + 1))
 
-    print("Hehe")
-    print(len(OP[1][2]))
     return fjsp_instance, machine, processing_times, alternatives, largeH
 
 def print_jobs(fjsp_instance):
@@ -109,8 +102,8 @@ if __name__ == "__main__":
 
     # Parse the FJSP instance from the file
     fjsp_instance,machines,processtimes, alternatives, H = parse_afjsp(filename)
-    print(H)
+    print(alternatives)
 
 
     # Print the parsed information
-    print_jobs(fjsp_instance) 
+    #print_jobs(fjsp_instance) 
